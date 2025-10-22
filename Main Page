@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chaminade Animation Club</title>
+    <!-- Load Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Load Google Fonts: Inter for body, Press Start 2P for the header to get that pixelated look -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&family=Press+Start+2P&display=swap" rel="stylesheet">
+    <style>
+        /* KEYFRAMES FOR ANIMATION */
+        @keyframes neon-pulse {
+            /* Subtle blue glow for the glass elements */
+            0% { box-shadow: 0 0 10px rgba(52, 211, 235, 0.3), 0 10px 40px 0 rgba(0, 0, 0, 0.4); }
+            50% { box-shadow: 0 0 15px rgba(52, 211, 235, 0.6), 0 10px 40px 0 rgba(0, 0, 0, 0.5); }
+            100% { box-shadow: 0 0 10px rgba(52, 211, 235, 0.3), 0 10px 40px 0 rgba(0, 0, 0, 0.4); }
+        }
+
+        @keyframes subtle-float {
+            /* Gentle vertical movement for the title */
+            0% { transform: translateY(0); }
+            50% { transform: translateY(-4px); }
+            100% { transform: translateY(0); }
+        }
+
+        /* UPDATED: Keyframe animation for abstract blue/purple shifting background (Aura Pulse) */
+        @keyframes aura-pulse {
+            /* Moves the gradient horizontally from left to right and back */
+            0% { background-position: 0% 50%; } /* Start left, center vertically */
+            50% { background-position: 100% 50%; } /* Move right, stay centered vertically */
+            100% { background-position: 0% 50%; } /* Move back to start */
+        }
+
+        /* NEW: Fade and Slide Up for page content (when a section is activated) */
+        @keyframes section-fade-in {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Custom Liquid Glass (Glassmorphism) Style */
+        .liquid-glass {
+            /* Semi-transparent dark background */
+            background-color: rgba(30, 41, 59, 0.65); /* slate-800/65 */
+            /* Crucial for the glass effect: blurring the content behind it */
+            backdrop-filter: blur(14px);
+            -webkit-backdrop-filter: blur(14px);
+            /* Subtle white border/shadow for definition */
+            border: 1px solid rgba(255, 255, 255, 0.25);
+            /* Applying neon pulse animation */
+            animation: neon-pulse 3s infinite alternate;
+            transition: all 0.3s ease-in-out;
+            /* Enable 3D transform for the fun tilt effect on hover */
+            transform-style: preserve-3d;
+        }
+        
+        /* NEW: Hover effect for liquid glass cards */
+        .liquid-glass:hover {
+            /* Subtle 3D tilt and slightly increased shadow */
+            transform: perspective(1000px) rotateX(1deg) rotateY(1deg) scale(1.01);
+            animation-play-state: paused; /* Pause the pulse on hover for contrast */
+            box-shadow: 0 0 25px rgba(52, 211, 235, 0.8), 0 10px 50px 0 rgba(0, 0, 0, 0.6);
+        }
+
+        /* Apply fade-in animation to page content when shown */
+        .page-content.active {
+            animation: section-fade-in 0.8s ease-out forwards;
+        }
+        
+        /* UPDATED: Gradient for the entire page background - Horizontal, Slower, Lighter Aura */
+        body {
+            /* Solid dark base color */
+            background: #0f172a; 
+            min-height: 100vh;
+            font-family: 'Inter', sans-serif;
+            color: #e2e8f0;
+
+            /* Abstract, slow-moving radial gradient for the animated blue effect */
+            background-image: radial-gradient(
+                circle at top left,
+                rgba(52, 211, 235, 0.40), /* Lighter Blue/Cyan (0.40 opacity) */
+                rgba(167, 139, 250, 0.40) 30%, /* Lighter Blurple/Indigo (0.40 opacity) */
+                #0f172a 70% /* Fade to background color */
+            );
+            background-size: 300% 300%; /* Massive size ensures only a subtle shift is seen */
+            /* Apply the smooth movement animation - Slower (90s) */
+            animation: aura-pulse 90s ease-in-out infinite alternate; 
+        }
+        /* Custom font for the main title */
+        .pixel-font {
+            font-family: 'Press Start 2P', cursive;
+        }
+
+        /* 1. COOL VECTOR CURSOR (Rounded) */
+        body {
+            /* Custom rounded cursor: simple circle outline */
+            cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" style="fill:none;stroke:#38bdf8;stroke-width:2;"><circle cx="15" cy="15" r="7"/></svg>'), default;
+        }
+
+        /* Custom pointer for clickable elements: slightly larger, filled circle */
+        a, button, .cursor-pointer {
+            cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" style="fill:#0ea5e9;stroke:#0f172a;stroke-width:1;"><circle cx="15" cy="15" r="9"/></svg>'), pointer;
+        }
+
+        /* COOLER HEADER IMAGE - OVERRIDES ANIMATED BODY BACKGROUND */
+        #home {
+            /* User requested background: Minecraft Cherry Blossom */
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed; /* Ensures the image stays put, adds depth */
+            /* Dark overlay adjusted slightly for better text contrast over the bright image */
+            box-shadow: inset 0 0 0 2000px rgba(0, 0, 0, 0.5);
+            /* Re-applying the dark overlay via background-image for the home section */
+            background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('https://axenthost.com/img/articles/minecraft-cherry-blossom/minecraft-cherry-blossom-biome.webp');
+        }
+
+        /* Ensure all non-home content is positioned for page switching */
+        .page-content {
+            min-height: calc(100vh - 80px); /* Adjusting for header height */
+            padding-top: 5rem;
+            opacity: 0; /* Start hidden for animation */
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Floating Liquid Glass Navigation Menu (fixed position ensures floating) -->
+    <header class="fixed top-0 left-0 w-full z-50 liquid-glass shadow-xl py-3 transition duration-300">
+        <nav class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex justify-between items-center">
+            <!-- User Requested Logo Image -->
+            <div class="flex items-center">
+                <img src="https://thewaltdisneycompany.com/app/uploads/2023/11/1920_51-107_720-614x491.jpg"
+                     alt="Chaminade Animation Club Logo"
+                     class="h-10 w-auto rounded-full shadow-lg border border-cyan-300/50 mr-4 transition duration-300 hover:scale-110"
+                     onerror="this.onerror=null; this.src='https://placehold.co/40x40/0f172a/38bdf8?text=CAC';"
+                >
+                <!-- Retaining the club name text, but stylized -->
+                <span class="text-xl font-bold text-white tracking-widest hidden sm:inline">Animation Club</span>
+            </div>
+
+            <!-- Navigation Links -->
+            <div class="space-x-4 flex">
+                <a href="#home" class="nav-link text-white hover:text-cyan-300 transition duration-150 p-2 rounded-lg transform hover:scale-110">Home</a>
+                <a href="#about" class="nav-link text-white hover:text-cyan-300 transition duration-150 p-2 rounded-lg transform hover:scale-110">About</a>
+                <a href="#tools" class="nav-link text-white hover:text-cyan-300 transition duration-150 p-2 rounded-lg transform hover:scale-110">Tools</a>
+                <a href="#guide" class="nav-link text-white hover:text-cyan-300 transition duration-150 p-2 rounded-lg transform hover:scale-110">Guide</a>
+                <a href="#updates" class="nav-link text-white hover:text-cyan-300 transition duration-150 p-2 rounded-lg transform hover:scale-110">Updates & Info</a>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Main Content Area - All sections are treated as pages now -->
+    <main class="relative">
+
+        <!-- Full-Screen Hero Section (Home Page) -->
+        <section id="home" class="h-screen flex flex-col justify-center items-center text-center p-8 pt-24 transition duration-500 ease-in-out">
+            <div class="mb-12">
+                <!-- Added subtle-float animation to the main title -->
+                <h1 class="pixel-font text-5xl md:text-7xl lg:text-8xl text-white tracking-wider leading-tight animate-pulse"
+                    style="animation: subtle-float 5s ease-in-out infinite;">
+                    Welcome to the<br>Animation Club
+                </h1>
+            </div>
+
+            <!-- Scroll Down Indicator (Chevron) - Now directs to the next page -->
+            <a href="#about" class="absolute bottom-10 animate-bounce cursor-pointer">
+                <svg class="w-12 h-12 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                </svg>
+            </a>
+        </section>
+
+        <!-- About Section (Content Page) -->
+        <section id="about" class="page-content hidden transition duration-500 ease-in-out max-w-4xl mx-auto py-16 px-6 lg:px-8">
+            <h2 class="text-5xl font-extrabold mb-6 text-cyan-300">About the Club</h2>
+            <div class="liquid-glass p-8 rounded-xl">
+                <!-- START: Updated content for About page -->
+                <p class="text-lg leading-relaxed">
+                    At Chaminade Animation Club, we explore and learn animation through many methods.
+                </p>
+                <p class="mt-4 text-lg leading-relaxed">
+                    We meet every other Friday (The ones that aren't half days) during second lunch in the library. Make sure to come!
+                </p>
+                <!-- END: Updated content for About page -->
+            </div>
+        </section>
+
+        <!-- Tools Section (Content Page) -->
+        <section id="tools" class="page-content hidden transition duration-500 ease-in-out max-w-4xl mx-auto py-16 px-6 lg:px-8">
+            <h2 class="text-5xl font-extrabold mb-6 text-cyan-300">Animation Tools & Mediums</h2>
+            <div class="liquid-glass p-8 rounded-xl">
+                <p class="text-xl leading-relaxed mb-6 font-semibold text-white">
+                    There are many tools and mediums of animation. Here are some great options for the club:
+                </p>
+
+                <div class="space-y-6">
+                    <!-- 2D ANIMATION -->
+                    <div>
+                        <h3 class="text-3xl font-extrabold text-cyan-300 mb-2">2D Animation</h3>
+                        <ul class="list-disc list-inside space-y-2 ml-4 text-lg">
+                            <!-- Link Added -->
+                            <li>
+                                <a href="https://www.canva.com" target="_blank" class="text-cyan-400 hover:underline font-bold">Canva.com</a>: You can make videos and simple animations in Canva.
+                            </li>
+                            <!-- Link Added -->
+                            <li>
+                                <a href="https://brush.ninja" target="_blank" class="text-cyan-400 hover:underline font-bold">Brush.ninja</a>: Solid, easy-to-use online animation maker.
+                            </li>
+                            <!-- Link Added -->
+                            <li>
+                                <a href="https://www.wickeditor.com" target="_blank" class="text-cyan-400 hover:underline font-bold">Wickeditor.com</a>: Very good online animation maker with layers, similar to Flash/Animate.
+                            </li>
+                        </ul>
+                    </div>
+
+                    <!-- 3D ANIMATION -->
+                    <div>
+                        <h3 class="text-3xl font-extrabold text-cyan-300 mb-2">3D Animation</h3>
+                        <ul class="list-disc list-inside space-y-2 ml-4 text-lg">
+                            <!-- Link Added -->
+                            <li>
+                                <a href="https://www.blender.org" target="_blank" class="text-cyan-400 hover:underline font-bold">Blender</a>: Solid 3D computer software. Note: It probably doesn't run that well on older school computers.
+                            </li>
+                            <!-- Link Added -->
+                            <li>
+                                <a href="https://spline.design" target="_blank" class="text-cyan-400 hover:underline font-bold">Spline.Design</a>: Excellent online 3D modeling and animation tool. Works very well directly in the web browser.
+                            </li>
+                        </ul>
+                    </div>
+
+                    <!-- STOP MOTION -->
+                    <div>
+                        <h3 class="text-3xl font-extrabold text-cyan-300 mb-2">Stop Motion</h3>
+                        <ul class="list-disc list-inside space-y-2 ml-4 text-lg">
+                            <!-- Link Added -->
+                            <li>
+                                <a href="https://cloudstopmotion.com" target="_blank" class="text-cyan-400 hover:underline font-bold">cloudstopmotion.com</a>: A very good and reliable online stop motion tool.
+                            </li>
+                        </ul>
+                    </div>
+
+                    <!-- PIXEL ART -->
+                    <div>
+                        <h3 class="text-3xl font-extrabold text-cyan-300 mb-2">Pixel Art</h3>
+                        <ul class="list-disc list-inside space-y-2 ml-4 text-lg">
+                            <!-- Link Added -->
+                            <li>
+                                <a href="https://pixelart.com" target="_blank" class="text-cyan-400 hover:underline font-bold">pixelart.com</a>: It's a good platform for creating pixel art.
+                            </li>
+                            <!-- Link Added -->
+                            <li>
+                                <a href="https://www.piskelapp.com" target="_blank" class="text-cyan-400 hover:underline font-bold">piskelapp.com</a>: A great tool for creating pixel art and animated sprites.
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Guide Section (Content Page) -->
+        <section id="guide" class="page-content hidden transition duration-500 ease-in-out max-w-4xl mx-auto py-16 px-6 lg:px-8">
+            <h2 class="text-5xl font-extrabold mb-6 text-cyan-300">Beginner's Animation Guide & Principles</h2>
+            <div class="liquid-glass p-8 rounded-xl space-y-8">
+
+                <!-- 1. The Fundamentals -->
+                <div>
+                    <h3 class="text-3xl font-extrabold text-white mb-4 border-b border-cyan-700 pb-2">Your First Animated Loop (5 Steps)</h3>
+                    <ol class="list-decimal list-inside space-y-4 text-lg">
+                        <li><strong class="text-cyan-300">Conceptualize:</strong> Start with a short, simple idea (e.g., a ball bouncing).</li>
+                        <li><strong class="text-cyan-300">Sketch Keyframes:</strong> Draw the most important frames (start, peak, end).</li>
+                        <li><strong class="text-cyan-300">In-Betweens:</strong> Fill in the frames between your keyframes to create smooth motion.</li>
+                        <li><strong class="text-cyan-300">Timing & Spacing:</strong> Adjust the speed of movement. Closer frames = slower; farther frames = faster.</li>
+                        <li><strong class="text-cyan-300">Review & Repeat:</strong> Watch your loop and refine the motion until it feels right.</li>
+                    </ol>
+                </div>
+
+                <!-- 2. The 12 Principles -->
+                <div>
+                    <h3 class="text-3xl font-extrabold text-white mb-4 border-b border-cyan-700 pb-2">The 12 Principles of Animation</h3>
+
+                    <!-- Image of the 12 Principles -->
+                    <img src="https://i0.wp.com/scifi.radio/wp-content/uploads/2017/09/principlesOfAnimation-1.jpg?fit=736%2C552&ssl=1"
+                         alt="Chart illustrating the 12 Principles of Animation"
+                         class="w-full max-w-2xl mx-auto rounded-lg shadow-2xl mb-6 border-2 border-cyan-500/50"
+                         onerror="this.onerror=null; this.src='https://placehold.co/736x552/0f172a/38bdf8?text=12+Principles+Image';"
+                    >
+
+                    <p class="text-lg mb-4">
+                        Mastered by Disney animators, these 12 principles are the foundation of all compelling animation, making movement believable and engaging:
+                    </p>
+                    <ul class="list-disc list-inside space-y-2 ml-4 text-base grid sm:grid-cols-2 gap-x-6">
+                        <li>Squash and Stretch</li>
+                        <li>Anticipation</li>
+                        <li>Staging</li>
+                        <li>Straight Ahead Action and Pose to Pose</li>
+                        <li>Follow Through and Overlapping Action</li>
+                        <li>Slow In and Slow Out</li>
+                        <li>Arcs</li>
+                        <li>Secondary Action</li>
+                        <li>Timing</li>
+                        <li>Exaggeration</li>
+                        <li>Solid Drawing</li>
+                        <li>Appeal</li>
+                    </ul>
+                    <p class="mt-4 text-lg">
+                        <strong class="text-cyan-300">Watch an in-depth explanation here:</strong>
+                        <a href="https://youtu.be/uDqjIdI4bF4?si=EBgtSB8i_K8TzvJ-" target="_blank" class="text-cyan-400 hover:underline font-bold transition duration-150">
+                            The 12 Principles of Animation (Explained)
+                        </a>
+                    </p>
+                </div>
+
+                <!-- 3. Tips and Tricks -->
+                <div>
+                    <h3 class="text-3xl font-extrabold text-white mb-4 border-b border-cyan-700 pb-2">Tips and Tricks for Efficiency</h3>
+                    <ul class="list-disc list-inside space-y-3 ml-4 text-lg">
+                        <li><strong class="text-cyan-300">Use Reference:</strong> Don't try to draw from memory! Use video, mirrors, or real-life footage to observe motion.</li>
+                        <li><strong class="text-cyan-300">Keep it Simple:</strong> Start with stick figures or simple shapes. Complexity comes later.</li>
+                        <li><strong class="text-cyan-300">Work in Layers:</strong> Separate elements (character, background, foreground) onto different layers to allow for easier edits.</li>
+                        <li><strong class="text-cyan-300">Save Constantly:</strong> Animation files can crash! Get into the habit of hitting Ctrl+S (or Cmd+S) every few minutes.</li>
+                        <li><strong class="text-cyan-300">Test Your Work:</strong> Play your animation back at the intended speed often to catch mistakes early.</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- Updates Section (Content Page) - UPDATED CONTENT -->
+        <section id="updates" class="page-content hidden transition duration-500 ease-in-out max-w-4xl mx-auto py-16 px-6 lg:px-8">
+            <h2 class="text-5xl font-extrabold mb-6 text-cyan-300">Club Announcements & Info</h2>
+            <div class="space-y-6">
+                <!-- Large Schoology Link Card with enhanced animation -->
+                <a href="https://chaminade.schoology.com/" target="_blank" class="block">
+                    <div class="liquid-glass p-10 rounded-xl text-center cursor-pointer transform transition-transform duration-300">
+                        <svg class="w-16 h-16 mx-auto mb-4 text-emerald-400" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/>
+                        </svg>
+                        <h3 class="text-3xl font-bold mt-1 mb-2 text-white">Schoology Page</h3>
+                        <p class="text-xl text-gray-300 mb-6">
+                            The Schoology page has all updates and info you need, including meeting notes, project submissions, and announcements.
+                        </p>
+                        <span class="inline-block bg-cyan-600 hover:bg-cyan-500 text-white font-extrabold py-3 px-8 rounded-full shadow-xl transition duration-300 transform hover:scale-105">
+                            Link to Schoology &rarr;
+                        </span>
+                    </div>
+                </a>
+            </div>
+        </section>
+        
+        <!-- The original Suggestions section has been removed -->
+
+    </main>
+
+    <!-- START: Footer -->
+    <footer class="text-center py-8 text-gray-400">
+        Chaminade Animation Club 2025 | All rights reserved
+    </footer>
+    <!-- END: Footer -->
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // UPDATED: Removed 'suggestions'
+            const pages = ['home', 'about', 'tools', 'guide', 'updates'];
+            const header = document.querySelector('header');
+
+            /**
+             * Manages the visibility of sections based on the URL hash.
+             */
+            function showPageFromHash() {
+                // Get the current hash, defaulting to 'home' if empty
+                let hash = window.location.hash.replace('#', '');
+                if (!pages.includes(hash)) {
+                    hash = 'home';
+                }
+
+                // If the hash is not set correctly, set it and let the hashchange event handle the rest
+                if (window.location.hash.replace('#', '') !== hash) {
+                    window.location.hash = hash;
+                    return;
+                }
+
+                // Scroll the window to the very top when switching pages
+                window.scrollTo({ top: 0, behavior: 'auto' });
+
+                pages.forEach(pageId => {
+                    const section = document.getElementById(pageId);
+                    const link = document.querySelector(`a[href="#${pageId}"]`);
+
+                    if (section) {
+                        if (pageId === hash) {
+                            // Show the active page and add animation class
+                            section.classList.remove('hidden');
+                            section.classList.add('active'); // Activates the section-fade-in animation
+                        } else {
+                            // Hide all other pages and remove animation class
+                            section.classList.add('hidden');
+                            section.classList.remove('active');
+                        }
+                    }
+
+                    if (link) {
+                        // Highlight the active navigation link
+                        if (pageId === hash) {
+                            link.classList.add('bg-slate-700/50', 'text-cyan-300');
+                            link.classList.remove('text-white');
+                        } else {
+                            link.classList.remove('bg-slate-700/50', 'text-cyan-300');
+                            link.classList.add('text-white');
+                        }
+                    }
+                });
+
+                // Ensure header styles are always applied
+                header.classList.add('liquid-glass', 'shadow-xl');
+                window.onscroll = null;
+            }
+
+            // Bind the page loading logic
+            window.addEventListener('hashchange', showPageFromHash);
+            showPageFromHash(); // Initial call to load the correct page
+        });
+    </script>
+
+</body>
+</html>
+
+
